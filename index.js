@@ -38,7 +38,6 @@ const walls = [
 World.add(world, walls);
 
 // Maze Generation
-
 const shuffleArray = (arr) => {
   let counter = arr.length;
   while (counter > 0) {
@@ -75,16 +74,48 @@ const stepThroughCell = (row, column) => {
 
   //Assemble randomly-ordered list of neighbors
   const neighbors = shuffleArray([
-    [row - 1, column],
-    [row, column + 1],
-    [row + 1, column],
-    [row, column - 1],
+    [row - 1, column, 'up'],
+    [row, column + 1, 'right'],
+    [row + 1, column, 'down'],
+    [row, column - 1, 'left'],
   ]);
+
   //For each neighbor...
-  //Check to see if that neighbor is out of bounds
-  //If we have visited that neighbor, continue to next neighbor
-  //Remove a wall from either the horizontals or verticals
+  for (let neighbor of neighbors) {
+    //array destructuring
+    const [nextRow, nextColumn, direction] = neighbor;
+    //Check to see if that neighbor is out of bounds
+    if (
+      nextRow < 0 ||
+      nextRow >= cells ||
+      nextColumn < 0 ||
+      nextColumn >= cells
+    ) {
+      //If we have visited that neighbor, continue to next neighbor
+      continue;
+    }
+    if (grid[nextRow][nextColumn]) continue;
+
+    //Remove a wall from either the horizontals or verticals
+    switch (direction) {
+      case 'left':
+        verticals[row][column - 1] = true;
+        break;
+      case 'right':
+        verticals[row][column] = true;
+        break;
+      case 'up':
+        horizontals[row - 1][column] = true;
+        break;
+      case 'down':
+        horizontals[row][column] = true;
+        break;
+    }
+
+    stepThroughCell(nextRow, nextColumn);
+  }
+
   //Visit that next cell
 };
 
-stepThroughCell(1, 1);
+stepThroughCell(startRow, startColumn);
