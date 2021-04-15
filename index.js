@@ -3,7 +3,7 @@ const { Engine, Render, Runner, World, Bodies } = Matter;
 // Maze dimensions and config vars
 const width = 600;
 const height = 600;
-const cells = 12;
+const cells = 10;
 const unitLength = width / cells;
 
 const engine = Engine.create();
@@ -12,7 +12,7 @@ const render = Render.create({
   element: document.body,
   engine: engine,
   options: {
-    wireframes: false,
+    wireframes: true,
     width,
     height,
   },
@@ -21,18 +21,18 @@ const render = Render.create({
 Render.run(render);
 Runner.run(Runner.create(), engine);
 
-//Walls
+// Maze Walls
 const walls = [
-  Bodies.rectangle(width / 2, 0, width, 40, {
+  Bodies.rectangle(width / 2, 0, width, 4, {
     isStatic: true,
   }),
-  Bodies.rectangle(width / 2, height, width, 40, {
+  Bodies.rectangle(width / 2, height, width, 4, {
     isStatic: true,
   }),
-  Bodies.rectangle(0, height / 2, 40, height, {
+  Bodies.rectangle(0, height / 2, 4, height, {
     isStatic: true,
   }),
-  Bodies.rectangle(width, height / 2, 40, height, {
+  Bodies.rectangle(width, height / 2, 4, height, {
     isStatic: true,
   }),
 ];
@@ -156,3 +156,19 @@ verticals.forEach((row, rowIdx) => {
     World.add(world, wall);
   });
 });
+
+// Finishing Point of the Maze
+const goal = Bodies.rectangle(
+  width - unitLength / 2,
+  height - unitLength / 2,
+  unitLength * 0.7,
+  unitLength * 0.7,
+  {
+    isStatic: true,
+  }
+);
+World.add(world, goal);
+
+// Ball config
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
+World.add(world, ball);
