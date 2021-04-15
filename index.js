@@ -172,3 +172,20 @@ World.add(world, goal);
 // Ball config
 const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
 World.add(world, ball);
+
+document.addEventListener('keydown', (evt) => {
+  switch (evt.keyCode) {
+    case 87:
+      console.log('move ball up');
+      break;
+    case 68:
+      console.log('move ball right');
+      break;
+    case 83:
+      console.log('move ball down');
+      break;
+    case 65:
+      console.log('move ball left');
+      break;
+  }
+});
