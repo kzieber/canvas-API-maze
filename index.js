@@ -1,12 +1,14 @@
-const { Engine, Render, Runner, World, Bodies, Body } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
 // Maze dimensions and config vars
 const width = 600;
 const height = 600;
-const cells = 10;
+const cells = 3;
 const unitLength = width / cells;
 
 const engine = Engine.create();
+//gravity disabled on the Y axis
+engine.world.gravity.y = 0;
 const { world } = engine;
 const render = Render.create({
   element: document.body,
@@ -164,13 +166,16 @@ const goal = Bodies.rectangle(
   unitLength * 0.7,
   unitLength * 0.7,
   {
+    label: 'goal',
     isStatic: true,
   }
 );
 World.add(world, goal);
 
 // Ball config
-const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
+  label: 'player ball',
+});
 World.add(world, ball);
 
 document.addEventListener('keydown', (evt) => {
@@ -194,4 +199,19 @@ document.addEventListener('keydown', (evt) => {
       Body.setVelocity(ball, { x: x - 5, y });
       break;
   }
+});
+
+// Win condition:
+
+Events.on(engine, 'collisionStart', (evt) => {
+  evt.pairs.forEach((collision) => {
+    const labels = ['player ball', 'goal'];
+
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      console.log('you win!');
+    }
+  });
 });
