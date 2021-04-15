@@ -1,4 +1,4 @@
-const { Engine, Render, Runner, World, Bodies } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body } = Matter;
 
 // Maze dimensions and config vars
 const width = 600;
@@ -174,18 +174,24 @@ const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
 World.add(world, ball);
 
 document.addEventListener('keydown', (evt) => {
+  const { x, y } = ball.velocity;
+
   switch (evt.keyCode) {
     case 87:
-      console.log('move ball up');
+      //move ball up
+      Body.setVelocity(ball, { x, y: y - 5 });
       break;
     case 68:
-      console.log('move ball right');
+      //move ball right
+      Body.setVelocity(ball, { x: x + 5, y });
       break;
     case 83:
-      console.log('move ball down');
+      // move ball down
+      Body.setVelocity(ball, { x, y: y + 5 });
       break;
     case 65:
-      console.log('move ball left');
+      // move ball left
+      Body.setVelocity(ball, { x: x - 5, y });
       break;
   }
 });
