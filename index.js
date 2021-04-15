@@ -1,8 +1,10 @@
 const { Engine, Render, Runner, World, Bodies } = Matter;
 
+// Maze dimensions and config vars
 const width = 600;
 const height = 600;
-const cells = 3;
+const cells = 12;
+const unitLength = width / cells;
 
 const engine = Engine.create();
 const { world } = engine;
@@ -10,7 +12,7 @@ const render = Render.create({
   element: document.body,
   engine: engine,
   options: {
-    wireframes: true,
+    wireframes: false,
     width,
     height,
   },
@@ -112,10 +114,45 @@ const stepThroughCell = (row, column) => {
         break;
     }
 
+    //Visit that next cell
     stepThroughCell(nextRow, nextColumn);
   }
-
-  //Visit that next cell
 };
 
 stepThroughCell(startRow, startColumn);
+
+//Draw walls of maze
+horizontals.forEach((row, rowIdx) => {
+  row.forEach((open, columnIdx) => {
+    if (open) return;
+
+    const wall = Bodies.rectangle(
+      columnIdx * unitLength + unitLength / 2,
+      rowIdx * unitLength + unitLength,
+      unitLength,
+      10,
+      {
+        isStatic: true,
+      }
+    );
+
+    World.add(world, wall);
+  });
+});
+
+verticals.forEach((row, rowIdx) => {
+  row.forEach((open, columnIdx) => {
+    if (open) return;
+
+    const wall = Bodies.rectangle(
+      columnIdx * unitLength + unitLength,
+      rowIdx * unitLength + unitLength / 2,
+      10,
+      unitLength,
+      {
+        isStatic: true,
+      }
+    );
+    World.add(world, wall);
+  });
+});
